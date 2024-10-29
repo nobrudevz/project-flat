@@ -1,148 +1,145 @@
-# Project File Collector
+<div align="center">
 
-Um script Python para coletar e organizar arquivos de projetos Laravel (ou similares) em uma única pasta, mantendo a estrutura de diretórios através da nomenclatura dos arquivos. Útil para revisão de código, análise de estrutura do projeto ou quando você precisa compartilhar apenas parte do projeto.
+# Project Flat
 
-## 🎯 Características
+🗃️ Colete e organize arquivos de projetos Laravel em uma estrutura plana
 
-- Coleta arquivos de forma recursiva baseado em padrões configuráveis
-- Converte caminhos de diretórios em nomes de arquivos com pontos
-- Suporta padrões de inclusão e exclusão específicos
-- Mantém as permissões originais dos arquivos
-- Logging detalhado do processo
-- Alta performance com otimização de busca
-- Configuração flexível via arquivo .ini
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/nobrudevz/project-flat/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-## 📋 Pré-requisitos
+</div>
 
-- Python 3.6+
-- Bibliotecas Python listadas em `requirements.txt`
+## 📖 Sobre
 
-## 🚀 Instalação
+Um script Python otimizado para coletar arquivos de projetos Laravel e convertê-los em uma estrutura plana, ideal para:
+- Revisão de código
+- Compartilhamento parcial de projetos
+- Análise de estrutura
+- Backup seletivo
+
+## ✨ Features
+
+- 🚀 **Alta Performance**: Busca otimizada de arquivos
+- 🎯 **Seletivo**: Padrões de inclusão/exclusão configuráveis
+- 🔄 **Conversão Inteligente**: `app/Models/User.php` → `app.Models.User.php`
+- 📝 **Logging Detalhado**: Rastreamento completo das operações
+
+## ⚡ Quickstart
 
 ```bash
-# Clone o repositório
-git clone https://github.com/USER/REPO.git
-cd REPO
-
-# Instale as dependências
+# Instale
+git clone https://github.com/nobrudevz/project-flat.git
+cd project-flat
 pip install -r requirements.txt
-```
 
-## ⚙️ Configuração
-
-Crie um arquivo `config.ini` com suas configurações:
-
-```ini
+# Configure (config.ini)
 [paths]
-# Diretório raiz do projeto
 source_dir = "C:\projects\laravel\meu-projeto"
-# Diretório onde os arquivos serão copiados
 output_dir = "output"
 
 [patterns]
-# Padrões para incluir arquivos
 include =
     .env
     composer.json
     app/*.php
+
+# Execute
+python main.py
+```
+
+## 🛠️ Configuração
+
+### Padrões Suportados
+
+| Tipo | Exemplo | Descrição |
+|------|---------|-----------|
+| Arquivo específico | `.env` | Match exato |
+| Diretório específico | `app/*.php` | Arquivos PHP no diretório app |
+| Recursivo | `app/**/*.php` | Arquivos PHP em todo diretório app |
+| Wildcard | `*.blade.php` | Qualquer arquivo blade.php |
+| Exclusão | `config/enums/*` | Ignora arquivos neste padrão |
+
+### Exemplo Completo
+
+```ini
+[paths]
+source_dir = "C:\projects\laravel\meu-projeto"
+output_dir = "output"
+
+[patterns]
+include =
+    .env
+    composer.json
+    package.json
+    app/**/*.php
     config/*.php
     routes/*.php
     resources/views/*.blade.php
 
-# Padrões para excluir (opcional)
 exclude =
     config/enums/*
 ```
 
-### Padrões Suportados
-
-- Arquivos específicos: `.env`, `composer.json`
-- Padrões por diretório: `app/*.php`
-- Padrões recursivos: `app/**/*.php`
-- Wildcards: `*.blade.php`
-- Exclusões: `config/enums/*`
-
-## 🖥️ Uso
-
-```bash
-# Uso básico
-python main.py
-
-# Usando arquivo de configuração alternativo
-python main.py /caminho/para/config.ini
-```
-
-## 📋 Exemplo de Saída
-
-Estrutura original:
+## 📊 Exemplo de Uso
 
 ```text
-meu-projeto/
-├── app/
-│   ├── Models/
-│   │   └── User.php
-│   └── Controllers/
-│       └── UserController.php
+Entrada:                          Saída:
+meu-projeto/                     output/
+├── app/                        ├── app.Models.User.php
+│   ├── Models/                 ├── app.Http.Controllers.UserController.php
+│   │   └── User.php           └── resources.views.user.blade.php
+│   └── Http/
+│       └── Controllers/
+│           └── UserController.php
 └── resources/
     └── views/
         └── user.blade.php
 ```
 
-Saída gerada:
+## 🔍 Troubleshooting
 
-```text
-output/
-├── app.Models.User.php
-├── app.Controllers.UserController.php
-└── resources.views.user.blade.php
-```
+<details>
+<summary>Arquivos não encontrados</summary>
 
-## 📝 Logging
-
-O script gera logs detalhados incluindo:
-
-- Início do processo
-- Padrões utilizados
-- Arquivos processados
-- Erros encontrados
-- Estatísticas finais
-
-## ⚠️ Tratamento de Erros
-
-- Validação de configuração
-- Verificação de permissões
-- Tratamento de erros de I/O
-- Logs detalhados para debugging
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie sua Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add: alguma funcionalidade'`)
-4. Push para a Branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 🔍 Resolução de Problemas
-
-### Arquivos não estão sendo coletados
-
-- Verifique se os padrões em `config.ini` estão corretos
+- Verifique os padrões no `config.ini`
 - Confirme os caminhos dos diretórios
-- Verifique as permissões dos arquivos
-- Examine os logs para mais detalhes
+- Examine os logs para detalhes
+</details>
 
-### Erros de permissão
+<details>
+<summary>Erros de permissão</summary>
 
-- Verifique as permissões do diretório fonte
-- Confirme o acesso ao diretório de saída
-- Execute o script com as permissões adequadas
+- Verifique permissões do diretório fonte
+- Confirme acesso ao diretório de saída
+- Execute com privilégios adequados
+</details>
 
-### Performance
+<details>
+<summary>Problemas de performance</summary>
 
-- Use padrões específicos em vez de wildcards genéricos
-- Evite padrões recursivos desnecessários
-- Limite a profundidade da busca quando possível
+- Use padrões específicos
+- Evite recursão desnecessária
+- Limite a profundidade da busca
+</details>
+
+## 👥 Contribuindo
+
+Contribuições são bem-vindas! Por favor, leia nosso guia de contribuição.
+
+1. Fork
+2. Feature Branch (`feature/AmazingFeature`)
+3. Commit (`git commit -m 'Add: feature'`)
+4. Push (`git push origin feature/AmazingFeature`)
+5. Pull Request
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+[MIT](LICENSE) © [NobruDev](https://github.com/nobrudevz)
+
+---
+
+<div align="center">
+Made with ❤️ by <a href="https://github.com/nobrudevz">NobruDev</a>
+</div>
