@@ -1,0 +1,2 @@
+pathlib==1.0.1
+# Note: pathlib é incluída na biblioteca padrão do Python 3, mas mantida aqui para compatibilidade

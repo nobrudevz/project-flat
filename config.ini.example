@@ -1,0 +1,27 @@
+[paths]
+source_dir = "C:\project"
+output_dir = "C:\output"
+
+[patterns]
+include =
+    .env
+    composer.json
+    package.json
+    app/*.php
+    app/app.php
+    config/*.php
+    database/migrations/*.php
+    lang/pt_BR/*.php
+    lang/pt_BR.json
+    public/assets/js/*.js
+    public/assets/vendor/js/*.js
+    resources/views/*.blade.php
+    routes/*.php
+
+exclude =
+    config/enums/*
+    *_ide_helper*
+    *.lock
+    *vendor*
+    *node_modules*
+    *.git*
