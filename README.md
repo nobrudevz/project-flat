@@ -1,93 +1,83 @@
 # Project File Collector
 
-Um script Python para coletar e organizar arquivos de um projeto Laravel (ou similar) em uma única pasta, mantendo a estrutura de diretórios através da nomenclatura dos arquivos.
+Um script Python para coletar e organizar arquivos de projetos Laravel (ou similares) em uma única pasta, mantendo a estrutura de diretórios através da nomenclatura dos arquivos. Útil para revisão de código, análise de estrutura do projeto ou quando você precisa compartilhar apenas parte do projeto.
 
-## 🎯 Funcionalidades
+## 🎯 Características
 
-- Varre recursivamente todas as pastas do projeto
-- Filtra arquivos baseado em padrões configuráveis de inclusão/exclusão
-- Converte caminhos de arquivo para formato com pontos (ex: `app/Models/User.php` → `app.Models.User.php`)
-- Mantém permissões originais dos arquivos
+- Coleta arquivos de forma recursiva baseado em padrões configuráveis
+- Converte caminhos de diretórios em nomes de arquivos com pontos
+- Suporta padrões de inclusão e exclusão específicos
+- Mantém as permissões originais dos arquivos
 - Logging detalhado do processo
+- Alta performance com otimização de busca
 - Configuração flexível via arquivo .ini
 
 ## 📋 Pré-requisitos
 
-- Python 3.6 ou superior
+- Python 3.6+
 - Bibliotecas Python listadas em `requirements.txt`
 
 ## 🚀 Instalação
 
-1. Clone ou baixe este repositório
-2. Instale as dependências:
+```bash
+# Clone o repositório
+git clone https://github.com/USER/REPO.git
+cd REPO
 
-```shell
+# Instale as dependências
 pip install -r requirements.txt
 ```
 
 ## ⚙️ Configuração
 
-O arquivo `config.ini` contém todas as configurações necessárias:
+Crie um arquivo `config.ini` com suas configurações:
 
 ```ini
 [paths]
-source_dir = .               # Diretório raiz do projeto
-output_dir = ./collected_files  # Diretório de saída
+# Diretório raiz do projeto
+source_dir = "C:\projects\laravel\meu-projeto"
+# Diretório onde os arquivos serão copiados
+output_dir = "output"
 
 [patterns]
 # Padrões para incluir arquivos
 include =
-    *.blade.php
-    *.php
     .env
-    lara-*-log.ini
+    composer.json
+    app/*.php
+    config/*.php
+    routes/*.php
+    resources/views/*.blade.php
 
-# Padrões para excluir arquivos
+# Padrões para excluir (opcional)
 exclude =
-    *ide*helper.php
-    *.lock
-    *vendor*
-    *node_modules*
-    *.git*
+    config/enums/*
 ```
 
-### Personalizando Padrões
+### Padrões Suportados
 
-- Use `*` como curinga para qualquer sequência de caracteres
-- Um padrão por linha
-- Linhas em branco são ignoradas
-- Não é necessário usar aspas
+- Arquivos específicos: `.env`, `composer.json`
+- Padrões por diretório: `app/*.php`
+- Padrões recursivos: `app/**/*.php`
+- Wildcards: `*.blade.php`
+- Exclusões: `config/enums/*`
 
 ## 🖥️ Uso
 
-### Uso Básico
-
-```shell
+```bash
+# Uso básico
 python main.py
-```
 
-### Usando Arquivo de Configuração Alternativo
-
-```shell
-python main.py caminho/para/outro_config.ini
-```
-
-## 📁 Estrutura do Projeto
-
-```text
-.
-├── config.ini          # Configurações do projeto
-├── main.py            # Script principal
-├── requirements.txt    # Dependências do projeto
-└── README.md          # Esta documentação
+# Usando arquivo de configuração alternativo
+python main.py /caminho/para/config.ini
 ```
 
 ## 📋 Exemplo de Saída
 
-Se você tiver um projeto com esta estrutura:
+Estrutura original:
 
 ```text
-meu_projeto/
+meu-projeto/
 ├── app/
 │   ├── Models/
 │   │   └── User.php
@@ -98,56 +88,61 @@ meu_projeto/
         └── user.blade.php
 ```
 
-O script irá gerar:
+Saída gerada:
 
 ```text
-collected_files/
+output/
 ├── app.Models.User.php
 ├── app.Controllers.UserController.php
 └── resources.views.user.blade.php
 ```
 
-## 📝 Logs
+## 📝 Logging
 
-O script gera logs detalhados com:
+O script gera logs detalhados incluindo:
 
 - Início do processo
-- Padrões de inclusão/exclusão utilizados
-- Cada arquivo copiado
-- Quaisquer erros encontrados
-- Total de arquivos processados
+- Padrões utilizados
+- Arquivos processados
+- Erros encontrados
+- Estatísticas finais
 
 ## ⚠️ Tratamento de Erros
 
-O script inclui tratamento robusto de erros para:
-
-- Arquivo de configuração ausente ou inválido
-- Problemas de permissão
-- Erros de cópia de arquivo
-- Diretórios inexistentes
+- Validação de configuração
+- Verificação de permissões
+- Tratamento de erros de I/O
+- Logs detalhados para debugging
 
 ## 🤝 Contribuindo
 
-Sinta-se à vontade para:
-
-1. Reportar bugs
-2. Sugerir novas funcionalidades
-3. Enviar pull requests
+1. Fork o projeto
+2. Crie sua Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add: alguma funcionalidade'`)
+4. Push para a Branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
 ## 🔍 Resolução de Problemas
 
-### Arquivos não estão sendo copiados
+### Arquivos não estão sendo coletados
 
 - Verifique se os padrões em `config.ini` estão corretos
-- Confirme se o diretório fonte está correto
+- Confirme os caminhos dos diretórios
 - Verifique as permissões dos arquivos
+- Examine os logs para mais detalhes
 
 ### Erros de permissão
 
-- Verifique se você tem permissão para ler os arquivos fonte
-- Confirme se você tem permissão para escrever no diretório de saída
+- Verifique as permissões do diretório fonte
+- Confirme o acesso ao diretório de saída
+- Execute o script com as permissões adequadas
 
-### Conflitos de nome
+### Performance
 
-- Arquivos com mesmo nome em diretórios diferentes serão sobrescritos
-- Use diretórios de saída diferentes para diferentes execuções
+- Use padrões específicos em vez de wildcards genéricos
+- Evite padrões recursivos desnecessários
+- Limite a profundidade da busca quando possível
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
