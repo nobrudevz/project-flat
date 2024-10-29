@@ -7,21 +7,15 @@ include =
     .env
     composer.json
     package.json
-    app/*.php
-    app/app.php
-    config/*.php
+    app/**/*.php
+    bootstrap/*.php
+    config/**/*.php
     database/migrations/*.php
-    lang/pt_BR/*.php
-    lang/pt_BR.json
-    public/assets/js/*.js
-    public/assets/vendor/js/*.js
-    resources/views/*.blade.php
-    routes/*.php
+    resources/assets/js/*.js
+    resources/assets/vendor/js/*.js
+    resources/views/content/app/**/*.blade.php
+    resources/views/content/app/**/*.scss
+    resources/views/content/app/**/*.js
+    routes/**/*.php
 
 exclude =
-    config/enums/*
-    *_ide_helper*
-    *.lock
-    *vendor*
-    *node_modules*
-    *.git*
