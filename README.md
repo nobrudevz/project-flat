@@ -2,7 +2,11 @@
 
 # Project Flat
 
-🗃️ Colete e organize arquivos de projetos Laravel em uma estrutura plana
+🗃️ Collect and organize Laravel project files into a flat structure
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](./README.md)
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](./README.pt-br.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](./README.es.md)
 
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,32 +15,32 @@
 
 </div>
 
-## 📖 Sobre
+## 📖 About
 
-Um script Python otimizado para coletar arquivos de projetos Laravel e convertê-los em uma estrutura plana, ideal para:
-- Revisão de código
-- Compartilhamento parcial de projetos
-- Análise de estrutura
-- Backup seletivo
+An optimized Python script to collect Laravel project files and convert them into a flat structure, perfect for:
+- Code review
+- Partial project sharing
+- Structure analysis
+- Selective backup
 
 ## ✨ Features
 
-- 🚀 **Alta Performance**: Busca otimizada de arquivos
-- 🎯 **Seletivo**: Padrões de inclusão/exclusão configuráveis
-- 🔄 **Conversão Inteligente**: `app/Models/User.php` → `app.Models.User.php`
-- 📝 **Logging Detalhado**: Rastreamento completo das operações
+- 🚀 **High Performance**: Optimized file search
+- 🎯 **Selective**: Configurable include/exclude patterns
+- 🔄 **Smart Conversion**: `app/Models/User.php` → `app.Models.User.php`
+- 📝 **Detailed Logging**: Complete operation tracking
 
 ## ⚡ Quickstart
 
 ```bash
-# Instale
+# Install
 git clone https://github.com/nobrudevz/project-flat.git
 cd project-flat
 pip install -r requirements.txt
 
 # Configure (config.ini)
 [paths]
-source_dir = "C:\projects\laravel\meu-projeto"
+source_dir = "C:\projects\laravel\my-project"
 output_dir = "output"
 
 [patterns]
@@ -45,27 +49,27 @@ include =
     composer.json
     app/*.php
 
-# Execute
+# Run
 python main.py
 ```
 
-## 🛠️ Configuração
+## 🛠️ Configuration
 
-### Padrões Suportados
+### Supported Patterns
 
-| Tipo | Exemplo | Descrição |
-|------|---------|-----------|
-| Arquivo específico | `.env` | Match exato |
-| Diretório específico | `app/*.php` | Arquivos PHP no diretório app |
-| Recursivo | `app/**/*.php` | Arquivos PHP em todo diretório app |
-| Wildcard | `*.blade.php` | Qualquer arquivo blade.php |
-| Exclusão | `config/enums/*` | Ignora arquivos neste padrão |
+| Type | Example | Description |
+|------|---------|-------------|
+| Specific file | `.env` | Exact match |
+| Directory specific | `app/*.php` | PHP files in app directory |
+| Recursive | `app/**/*.php` | PHP files in all app subdirectories |
+| Wildcard | `*.blade.php` | Any blade.php file |
+| Exclusion | `config/enums/*` | Ignore files matching this pattern |
 
-### Exemplo Completo
+### Complete Example
 
 ```ini
 [paths]
-source_dir = "C:\projects\laravel\meu-projeto"
+source_dir = "C:\projects\laravel\my-project"
 output_dir = "output"
 
 [patterns]
@@ -82,11 +86,11 @@ exclude =
     config/enums/*
 ```
 
-## 📊 Exemplo de Uso
+## 📊 Usage Example
 
 ```text
-Entrada:                          Saída:
-meu-projeto/                     output/
+Input:                            Output:
+my-project/                      output/
 ├── app/                        ├── app.Models.User.php
 │   ├── Models/                 ├── app.Http.Controllers.UserController.php
 │   │   └── User.php           └── resources.views.user.blade.php
@@ -101,32 +105,32 @@ meu-projeto/                     output/
 ## 🔍 Troubleshooting
 
 <details>
-<summary>Arquivos não encontrados</summary>
+<summary>Files not found</summary>
 
-- Verifique os padrões no `config.ini`
-- Confirme os caminhos dos diretórios
-- Examine os logs para detalhes
+- Check patterns in `config.ini`
+- Confirm directory paths
+- Check logs for details
 </details>
 
 <details>
-<summary>Erros de permissão</summary>
+<summary>Permission errors</summary>
 
-- Verifique permissões do diretório fonte
-- Confirme acesso ao diretório de saída
-- Execute com privilégios adequados
+- Check source directory permissions
+- Confirm output directory access
+- Run with proper privileges
 </details>
 
 <details>
-<summary>Problemas de performance</summary>
+<summary>Performance issues</summary>
 
-- Use padrões específicos
-- Evite recursão desnecessária
-- Limite a profundidade da busca
+- Use specific patterns
+- Avoid unnecessary recursion
+- Limit search depth
 </details>
 
-## 👥 Contribuindo
+## 👥 Contributing
 
-Contribuições são bem-vindas! Por favor, leia nosso guia de contribuição.
+Contributions are welcome! Please read our contribution guide.
 
 1. Fork
 2. Feature Branch (`feature/AmazingFeature`)
@@ -134,12 +138,12 @@ Contribuições são bem-vindas! Por favor, leia nosso guia de contribuição.
 4. Push (`git push origin feature/AmazingFeature`)
 5. Pull Request
 
-## 📄 Licença
+## 📄 License
 
-[MIT](LICENSE) © [NobruDev](https://github.com/nobrudevz)
+[MIT](LICENSE) © [NoBru Dev](https://github.com/nobrudevz)
 
 ---
 
 <div align="center">
-Made with ❤️ by <a href="https://github.com/nobrudevz">NobruDev</a>
+Made with ❤️ by <a href="https://github.com/nobrudevz">NoBru Dev</a>
 </div>
