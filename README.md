@@ -144,10 +144,10 @@ Contributions are welcome! Please read our contribution guide.
 
 ## 📄 License
 
-[MIT](LICENSE) © [NoBru Dev](https://github.com/nobrudevz)
+[MIT](LICENSE) © [NobruDev](https://github.com/nobrudevz)
 
 ---
 
 <div align="center">
-Made with ❤️ by <a href="https://github.com/nobrudevz">NoBru Dev</a>
+Made with ❤️ by <a href="https://github.com/nobrudevz">NobruDev</a>
 </div>

@@ -144,10 +144,10 @@ mi-proyecto/                     output/
 
 ## 📄 Licencia
 
-[MIT](LICENSE) © [NoBru Dev](https://github.com/nobrudevz)
+[MIT](LICENSE) © [NobruDev](https://github.com/nobrudevz)
 
 ---
 
 <div align="center">
-Hecho con ❤️ por <a href="https://github.com/nobrudevz">NoBru Dev</a>
+Hecho con ❤️ por <a href="https://github.com/nobrudevz">NobruDev</a>
 </div>
