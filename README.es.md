@@ -29,7 +29,7 @@ Un script Python optimizado para recopilar archivos de proyectos Laravel y conve
 ## ✨ Características
 
 - 🚀 **Alto Rendimiento**: Búsqueda optimizada de archivos
-- 🎯 **Selectivo**: Patrones de inclusión/exclusión configurables
+- 🎯 **Selectivo**: Patrones de inclusión con exclusiones opcionales
 - 🔄 **Conversión Inteligente**: `app/Models/User.php` → `app.Models.User.php`
 - 📝 **Registro Detallado**: Seguimiento completo de operaciones
 
@@ -50,106 +50,24 @@ output_dir = "output"
 include =
     .env
     composer.json
-    app/*.php
-
-# Ejecutar
-python main.py
+    app/*.php      # Solo archivos directamente en app/
+    app/**/*.php   # Archivos en todos los subdirectorios
 ```
 
 ## 🛠️ Configuración
+
+### Reglas de Coincidencia de Patrones
+
+- Los patrones son relativos al directorio fuente
+- Los patrones deben coincidir con la estructura exacta del camino
+- `*` coincide con cualquier carácter dentro de un nivel de directorio
+- `**` coincide a través de niveles de directorio
 
 ### Patrones Soportados
 
 | Tipo | Ejemplo | Descripción |
 |------|---------|-------------|
-| Archivo específico | `.env` | Coincidencia exacta |
-| Directorio específico | `app/*.php` | Archivos PHP en directorio app |
-| Recursivo | `app/**/*.php` | Archivos PHP en todo directorio app |
-| Comodín | `*.blade.php` | Cualquier archivo blade.php |
-| Exclusión | `config/enums/*` | Ignora archivos en este patrón |
-
-### Ejemplo Completo
-
-```ini
-[paths]
-source_dir = "C:\projects\laravel\mi-proyecto"
-output_dir = "output"
-
-[patterns]
-include =
-    .env
-    composer.json
-    package.json
-    app/**/*.php
-    config/*.php
-    routes/*.php
-    resources/views/*.blade.php
-
-exclude =
-    config/enums/*
-```
-
-## 📊 Ejemplo de Uso
-
-```text
-Entrada:                          Salida:
-mi-proyecto/                     output/
-├── app/                        ├── app.Models.User.php
-│   ├── Models/                 ├── app.Http.Controllers.UserController.php
-│   │   └── User.php           └── resources.views.user.blade.php
-│   └── Http/
-│       └── Controllers/
-│           └── UserController.php
-└── resources/
-    └── views/
-        └── user.blade.php
-```
-
-## 🔍 Solución de Problemas
-
-<details>
-<summary>Archivos no encontrados</summary>
-
-- Verifique los patrones en `config.ini`
-- Confirme las rutas de directorios
-- Examine los registros para más detalles
-
-</details>
-
-<details>
-<summary>Errores de permisos</summary>
-
-- Verifique permisos del directorio fuente
-- Confirme acceso al directorio de salida
-- Ejecute con privilegios adecuados
-
-</details>
-
-<details>
-<summary>Problemas de rendimiento</summary>
-
-- Use patrones específicos
-- Evite recursión innecesaria
-- Limite la profundidad de búsqueda
-
-</details>
-
-## 👥 Contribuyendo
-
-¡Las contribuciones son bienvenidas! Por favor, lea nuestra guía de contribución.
-
-1. Fork
-2. Feature Branch (`feature/AmazingFeature`)
-3. Commit (`git commit -m 'Add: feature'`)
-4. Push (`git push origin feature/AmazingFeature`)
-5. Pull Request
-
-## 📄 Licencia
-
-[MIT](LICENSE) © [NobruDev](https://github.com/nobrudevz)
-
----
-
-<div align="center">
-Hecho con ❤️ por <a href="https://github.com/nobrudevz">NobruDev</a>
-</div>
+| Archivo específico | `.env` | Coincidencia exacta desde la raíz |
+| Directorio específico | `app/*.php` | Archivos PHP directamente en directorio app |
+| Recursivo | `app/**/*.php` | Archivos PHP en app y subdirectorios |
+| Múltiples extensiones | `resources/views/*{.php,.blade.php}` |

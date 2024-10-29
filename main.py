@@ -13,7 +13,11 @@ class ProjectFileCollector:
         self.source_dir = self._parse_path(self.config['paths']['source_dir'])
         self.output_dir = self._parse_path(self.config['paths']['output_dir'])
         self.include_patterns = [p.strip() for p in self.config['patterns']['include'].split('\n') if p.strip()]
-        self.exclude_patterns = [p.strip() for p in self.config['patterns']['exclude'].split('\n') if p.strip()]
+
+        # Torna o exclude opcional
+        self.exclude_patterns = []
+        if 'exclude' in self.config['patterns']:
+            self.exclude_patterns = [p.strip() for p in self.config['patterns']['exclude'].split('\n') if p.strip()]
 
         # Configuração do logging
         logging.basicConfig(
@@ -24,19 +28,11 @@ class ProjectFileCollector:
 
     def _parse_path(self, path: str) -> Path:
         """Processa o caminho mantendo aspas duplas e normalizando separadores"""
-        # Remove espaços em branco extras
         path = path.strip()
-
-        # Remove aspas se existirem
         if path.startswith('"') and path.endswith('"'):
             path = path[1:-1]
-
-        # Remove a barra final se existir
         path = path.rstrip('\\').rstrip('/')
-
-        # Normaliza o caminho para o sistema operacional atual
         path = os.path.normpath(path)
-
         return Path(path)
 
     def _clear_directory_contents(self, directory: Path) -> None:
@@ -44,7 +40,6 @@ class ProjectFileCollector:
         try:
             if directory.exists():
                 self.logger.info(f"Limpando conteúdo do diretório: {directory}")
-                # Remove cada item dentro do diretório
                 for item in directory.glob('*'):
                     if item.is_file():
                         item.unlink()
@@ -74,11 +69,20 @@ class ProjectFileCollector:
             with open(config_path, 'r', encoding='utf-8') as f:
                 config.read_file(f)
 
-            # Validar seções obrigatórias
+            # Validar apenas as seções e configurações obrigatórias
             required_sections = ['paths', 'patterns']
+            required_options = {
+                'paths': ['source_dir', 'output_dir'],
+                'patterns': ['include']
+            }
+
             for section in required_sections:
                 if section not in config:
                     raise ValueError(f"Seção '{section}' não encontrada no arquivo de configuração")
+
+                for option in required_options[section]:
+                    if option not in config[section]:
+                        raise ValueError(f"Opção '{option}' não encontrada na seção '{section}'")
 
             return config
 
@@ -88,25 +92,64 @@ class ProjectFileCollector:
 
     def should_include_file(self, file_path: Path) -> bool:
         """Verifica se o arquivo deve ser incluído baseado nos padrões definidos."""
-        file_str = str(file_path)
+        # Obtém o caminho relativo ao diretório fonte
+        try:
+            relative_path = str(file_path.relative_to(self.source_dir))
+            relative_path = relative_path.replace('\\', '/')  # Normaliza separadores para o matching
 
-        # Primeiro verifica se o arquivo deve ser excluído
-        for pattern in self.exclude_patterns:
-            if fnmatch.fnmatch(file_str, f'*{pattern}'):
+            # Primeiro verifica se o arquivo corresponde a algum padrão de include
+            included = False
+            for pattern in self.include_patterns:
+                # Normaliza o padrão para usar forward slashes
+                pattern = pattern.replace('\\', '/')
+
+                # Se o padrão não começa com /, adiciona-o para garantir match do início
+                if not pattern.startswith('/'):
+                    pattern = '/' + pattern
+
+                # Se o caminho relativo não começa com /, adiciona-o para o matching
+                relative_path_for_matching = relative_path
+                if not relative_path_for_matching.startswith('/'):
+                    relative_path_for_matching = '/' + relative_path_for_matching
+
+                # Converte o padrão glob para regex
+                pattern = pattern.replace('*', '[^/]*')
+                pattern = pattern.replace('?', '[^/]')
+
+                # Se termina com /, adiciona ** para incluir todo conteúdo do diretório
+                if pattern.endswith('/'):
+                    pattern += '**'
+
+                # Verifica se o caminho corresponde ao padrão
+                import re
+                if re.match(f"^{pattern}$", relative_path_for_matching):
+                    included = True
+                    break
+
+            # Se não foi incluído por nenhum padrão, retorna False
+            if not included:
                 return False
 
-        # Depois verifica se o arquivo deve ser incluído
-        for pattern in self.include_patterns:
-            if fnmatch.fnmatch(file_str, f'*{pattern}'):
+            # Se foi incluído e não há padrões de exclusão, retorna True
+            if not self.exclude_patterns:
                 return True
 
-        return False
+            # Verifica os padrões de exclusão
+            for pattern in self.exclude_patterns:
+                pattern = pattern.replace('\\', '/')
+                if fnmatch.fnmatch(relative_path, pattern):
+                    return False
+
+            return True
+
+        except ValueError:
+            # Se não conseguir obter o caminho relativo, não inclui o arquivo
+            return False
 
     def get_output_filename(self, file_path: Path) -> str:
         """Gera o nome do arquivo de saída no formato desejado."""
         try:
             relative_path = file_path.relative_to(self.source_dir)
-            # Converte separadores de caminho para pontos
             return str(relative_path).replace('\\', '.').replace('/', '.')
         except ValueError as e:
             self.logger.error(f"Erro ao gerar nome do arquivo de saída para {file_path}: {str(e)}")
@@ -118,12 +161,21 @@ class ProjectFileCollector:
 
         self.logger.info(f"Iniciando coleta de arquivos em: {self.source_dir}")
         self.logger.info("Padrões de inclusão: %s", ', '.join(self.include_patterns))
-        self.logger.info("Padrões de exclusão: %s", ', '.join(self.exclude_patterns))
+        if self.exclude_patterns:
+            self.logger.info("Padrões de exclusão: %s", ', '.join(self.exclude_patterns))
+        else:
+            self.logger.info("Nenhum padrão de exclusão definido")
 
         try:
             for file_path in self.source_dir.rglob('*'):
-                if file_path.is_file() and self.should_include_file(file_path):
-                    collected_files.add(file_path)
+                if file_path.is_file():
+                    if self.should_include_file(file_path):
+                        relative_path = str(file_path.relative_to(self.source_dir)).replace('\\', '/')
+                        self.logger.debug(f"Incluindo arquivo: {relative_path}")
+                        collected_files.add(file_path)
+                    else:
+                        relative_path = str(file_path.relative_to(self.source_dir)).replace('\\', '/')
+                        self.logger.debug(f"Ignorando arquivo: {relative_path}")
         except Exception as e:
             self.logger.error(f"Erro durante a coleta de arquivos: {str(e)}")
 
@@ -133,17 +185,12 @@ class ProjectFileCollector:
     def copy_files(self, collected_files: Set[Path]) -> None:
         """Copia os arquivos coletados para o diretório de saída."""
         try:
-            # Garante que o diretório de saída existe
             self._ensure_directory(self.output_dir)
-
-            # Limpa o conteúdo do diretório
             self._clear_directory_contents(self.output_dir)
 
             for source_file in collected_files:
                 output_filename = self.get_output_filename(source_file)
                 destination = self.output_dir / output_filename
-
-                # Garante que o diretório pai do arquivo de destino existe
                 self._ensure_directory(destination.parent)
 
                 try:
@@ -172,7 +219,6 @@ class ProjectFileCollector:
             raise
 
 def main():
-    # Permite especificar um arquivo de configuração diferente via linha de comando
     config_path = sys.argv[1] if len(sys.argv) > 1 else 'config.ini'
     collector = ProjectFileCollector(config_path)
     collector.run()

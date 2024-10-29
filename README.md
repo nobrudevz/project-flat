@@ -29,7 +29,7 @@ An optimized Python script to collect Laravel project files and convert them int
 ## ✨ Features
 
 - 🚀 **High Performance**: Optimized file search
-- 🎯 **Selective**: Configurable include/exclude patterns
+- 🎯 **Selective**: Configurable include patterns with optional exclusions
 - 🔄 **Smart Conversion**: `app/Models/User.php` → `app.Models.User.php`
 - 📝 **Detailed Logging**: Complete operation tracking
 
@@ -50,25 +50,30 @@ output_dir = "output"
 include =
     .env
     composer.json
-    app/*.php
-
-# Run
-python main.py
+    app/*.php      # Only files directly in app/
+    app/**/*.php   # Files in all subdirectories
 ```
 
 ## 🛠️ Configuration
+
+### Pattern Matching Rules
+
+- Patterns are relative to the source directory
+- Patterns must match the exact path structure
+- `*` matches any characters within a directory level
+- `**` matches across directory levels
 
 ### Supported Patterns
 
 | Type | Example | Description |
 |------|---------|-------------|
-| Specific file | `.env` | Exact match |
-| Directory specific | `app/*.php` | PHP files in app directory |
-| Recursive | `app/**/*.php` | PHP files in all app subdirectories |
-| Wildcard | `*.blade.php` | Any blade.php file |
-| Exclusion | `config/enums/*` | Ignore files matching this pattern |
+| Specific file | `.env` | Exact file match from project root |
+| Directory specific | `app/*.php` | PHP files directly in app directory only |
+| Recursive | `app/**/*.php` | PHP files in app and all subdirectories |
+| Multiple extensions | `resources/views/*{.php,.blade.php}` | Multiple file types in directory |
+| Optional exclusion | `exclude = app/cache/*` | Optionally ignore specific patterns |
 
-### Complete Example
+### Basic Example
 
 ```ini
 [paths]
@@ -79,14 +84,25 @@ output_dir = "output"
 include =
     .env
     composer.json
-    package.json
-    app/**/*.php
-    config/*.php
-    routes/*.php
-    resources/views/*.blade.php
+    app/*.php          # Only PHP files directly in app/
+    app/**/*.php       # PHP files in all app subdirectories
+    config/*.php       # Only PHP files directly in config/
+```
 
-exclude =
-    config/enums/*
+### Example with Exclusions
+
+```ini
+[paths]
+source_dir = "C:\projects\laravel\my-project"
+output_dir = "output"
+
+[patterns]
+include =
+    app/**/*.php       # All PHP files in app directory tree
+
+exclude =              # Optional section
+    app/cache/*        # Exclude everything in app/cache
+    app/tests/**/*.php # Exclude PHP files in tests directory
 ```
 
 ## 📊 Usage Example
@@ -110,9 +126,9 @@ my-project/                      output/
 <details>
 <summary>Files not found</summary>
 
-- Check patterns in `config.ini`
-- Confirm directory paths
-- Check logs for details
+- Check if patterns exactly match your directory structure
+- Confirm paths are relative to source directory
+- Review logs to see which files were evaluated
 
 </details>
 
@@ -128,9 +144,9 @@ my-project/                      output/
 <details>
 <summary>Performance issues</summary>
 
-- Use specific patterns
-- Avoid unnecessary recursion
-- Limit search depth
+- Use specific patterns instead of broad ones
+- Avoid deep recursion when possible
+- Be explicit about which files you need
 
 </details>
 

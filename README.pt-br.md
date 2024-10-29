@@ -29,7 +29,7 @@ Um script Python otimizado para coletar arquivos de projetos Laravel e convertê
 ## ✨ Recursos
 
 - 🚀 **Alta Performance**: Busca otimizada de arquivos
-- 🎯 **Seletivo**: Padrões de inclusão/exclusão configuráveis
+- 🎯 **Seletivo**: Padrões de inclusão com exclusões opcionais
 - 🔄 **Conversão Inteligente**: `app/Models/User.php` → `app.Models.User.php`
 - 📝 **Logging Detalhado**: Rastreamento completo das operações
 
@@ -50,25 +50,30 @@ output_dir = "output"
 include =
     .env
     composer.json
-    app/*.php
-
-# Execute
-python main.py
+    app/*.php      # Apenas arquivos diretamente em app/
+    app/**/*.php   # Arquivos em todos os subdiretórios
 ```
 
 ## 🛠️ Configuração
+
+### Regras de Correspondência de Padrões
+
+- Padrões são relativos ao diretório fonte
+- Padrões devem corresponder à estrutura exata do caminho
+- `*` corresponde a qualquer caractere dentro de um nível de diretório
+- `**` corresponde através de níveis de diretório
 
 ### Padrões Suportados
 
 | Tipo | Exemplo | Descrição |
 |------|---------|-----------|
-| Arquivo específico | `.env` | Match exato |
-| Diretório específico | `app/*.php` | Arquivos PHP no diretório app |
-| Recursivo | `app/**/*.php` | Arquivos PHP em todo diretório app |
-| Wildcard | `*.blade.php` | Qualquer arquivo blade.php |
-| Exclusão | `config/enums/*` | Ignora arquivos neste padrão |
+| Arquivo específico | `.env` | Match exato do arquivo a partir da raiz |
+| Diretório específico | `app/*.php` | Arquivos PHP diretamente no diretório app |
+| Recursivo | `app/**/*.php` | Arquivos PHP no app e subdiretórios |
+| Múltiplas extensões | `resources/views/*{.php,.blade.php}` | Múltiplos tipos de arquivo no diretório |
+| Exclusão opcional | `exclude = app/cache/*` | Opcionalmente ignora padrões específicos |
 
-### Exemplo Completo
+### Exemplo Básico
 
 ```ini
 [paths]
@@ -79,14 +84,25 @@ output_dir = "output"
 include =
     .env
     composer.json
-    package.json
-    app/**/*.php
-    config/*.php
-    routes/*.php
-    resources/views/*.blade.php
+    app/*.php          # Apenas arquivos PHP diretamente em app/
+    app/**/*.php       # Arquivos PHP em todos os subdiretórios
+    config/*.php       # Apenas arquivos PHP diretamente em config/
+```
 
-exclude =
-    config/enums/*
+### Exemplo com Exclusões
+
+```ini
+[paths]
+source_dir = "C:\projects\laravel\meu-projeto"
+output_dir = "output"
+
+[patterns]
+include =
+    app/**/*.php       # Todos os arquivos PHP na árvore do diretório app
+
+exclude =              # Seção opcional
+    app/cache/*        # Exclui tudo em app/cache
+    app/tests/**/*.php # Exclui arquivos PHP em tests
 ```
 
 ## 📊 Exemplo de Uso
@@ -110,9 +126,9 @@ meu-projeto/                     output/
 <details>
 <summary>Arquivos não encontrados</summary>
 
-- Verifique os padrões no `config.ini`
-- Confirme os caminhos dos diretórios
-- Examine os logs para detalhes
+- Verifique se os padrões correspondem exatamente à sua estrutura de diretórios
+- Confirme se os caminhos são relativos ao diretório fonte
+- Revise os logs para ver quais arquivos foram avaliados
 
 </details>
 
@@ -128,9 +144,9 @@ meu-projeto/                     output/
 <details>
 <summary>Problemas de performance</summary>
 
-- Use padrões específicos
-- Evite recursão desnecessária
-- Limite a profundidade da busca
+- Use padrões específicos em vez de genéricos
+- Evite recursão profunda quando possível
+- Seja explícito sobre quais arquivos você precisa
 
 </details>
 
